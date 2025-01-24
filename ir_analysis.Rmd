@@ -2,7 +2,7 @@
 title: "MLX90614 IR Sensor Characterization"
 author: "NCAR/EOL Calibration Laboratory"
 date: "`r format(Sys.time(), '%Y %B %d')`"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
