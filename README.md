@@ -1,5 +1,5 @@
 # drop_ir_cal
-Analysis/characterization of MLX90614 (xCF, xCH, xCI) IR sensors for NRD41.
+This project is an analysis/characterization of the Melexis MLX90614 (versions DCH, BCF, DCI) IR sensors for integration into the NCAR NRD41 dropsonde for measuring Sea Surface Temperature (SST).
 
 |PART NUMBER           |Temperature Code|Voltage                |Thermopiles             |FOV                     |                  
 |----------------------|----------------|-----------------------|------------------------|------------------------|
