@@ -15,7 +15,7 @@ In the NCAR/EOL Calibration Lab, the IR sensors are set up in a custom 'jig' des
 
 Once the bath temperature has stabilized, data is collected for ~1 minute. Then, the temperature of the IR sensor body is raised (need to experiment with integrated heater coil versus heat gun) for a moment (max 5 seconds). Once finished, the system is allowed to stabilize (~30 seconds). Next, three puffs of air are blown past the sensor lens (spaced approximately 5 seconds apart). After this, data is collected for another ~1 minute, before shutting down.
 
-IR data is saved to PN_SN_IR_YYYYMMDDTHHMM at 8Hz. Thermistor data is saved to PN_SN_TH_YYYYMMDDTHHMM at 1 sample/2 to 3 seconds. Thermistor data is recorded in raw A to D counts and is subsequently converted to Kelvin and then to Celcius. SPRT data is saved to PN_SN_ST_YYYYMMDDTHHMM at 1 sample/2 seconds. All data is up/downsampled as needed to reach 1 sample/s. All data is merged into one data file organized by date-timestamp.
+IR data is saved to PN_SN_IR_YYYYMMDDTHHMM at 8Hz. Thermistor data is saved to PN_SN_TH_YYYYMMDDTHHMM at 1 sample/2 to 3 seconds. Thermistor data is recorded in raw A to D counts and is subsequently converted to Kelvin and then to Celsius. The IR data either needs to be downsampled or the sample rate decreased. The thermistor data either needs to be upsampled or the sample rate increased. SPRT data is saved to PN_SN_ST_YYYYMMDDTHHMM at 1Hz, different than the default of 0.5Hz. This is done from the 1594A by navigating to Main Menu>Measure Menu>Timing Settings>Sample Period and changing 2 to 1. All data is merged into one data file organized by date-timestamp.
 
 ### Data Analysis
 
@@ -24,7 +24,7 @@ IR data is saved to PN_SN_IR_YYYYMMDDTHHMM at 8Hz. Thermistor data is saved to P
 |IR    |Ta      |C    |"ambient" (package temp)  |
 |      |To      |C    |"object" (IR)             |
 |ST    |T       |C    |reference                 |
-|TH    |T1      |C    |                          |
-|      |T2      |C    |                          |
-|      |T3      |C    |                          |
-|      |T4      |C    |                          |
+|TH    |T1      |C    |need to identify position |
+|      |T2      |C    |need to identify position |
+|      |T3      |C    |need to identify position |
+|      |T4      |C    |need to identify position |
