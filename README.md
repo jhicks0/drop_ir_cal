@@ -28,3 +28,5 @@ IR data is saved to PN_SN_IR_YYYYMMDDTHHMM at 8Hz. Thermistor data is saved to P
 |      |T2      |C    |need to identify position |
 |      |T3      |C    |need to identify position |
 |      |T4      |C    |need to identify position |
+
+Once data is imported and tidied, two types of plots will be made. The first will be plots of single runs with variables Ta, To, and T (and thermistor data if that is ready). The second will be a series of three plots with the difference of To and T by part number. Need to come up with a function that will look for a statistically significant relationship between Ta and To/T.
