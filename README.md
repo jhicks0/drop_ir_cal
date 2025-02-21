@@ -37,7 +37,13 @@ What: Fluke 7040 Oil Bath, Fluke 1594A Super-thermometer/5699 SPRT probe
 
 The oil bath is set to 25°C to limit the influence of the ambient room temperature.
 
-To keep the oil temperature stable: 1. Set the temperature to 25°C. 2. Set heating to low. 3. Turn on cooling. 4. Set cooling to low. 5. Allow the oil bath to run until the display stabilizes at 25.00.
+To keep the oil temperature stable:
+
+1.  Set the temperature to 25°C.
+2.  Set heating to low.
+3.  Turn on cooling.
+4.  Set cooling to low.
+5.  Allow the oil bath to run until the display stabilizes at 25.00.
 
 ![](photos/bath_control.JPG)
 
