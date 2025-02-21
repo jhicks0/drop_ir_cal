@@ -1,7 +1,7 @@
 MLX90614 IR Sensor Characterization
 ================
 NCAR/EOL Calibration Laboratory
-2025 February 20
+2025 February 21
 
 # MLX90614
 
@@ -53,3 +53,12 @@ ggplot(
 ```
 
 ![](ir_analysis_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
+``` r
+ggplot(
+  data = ST_DCI_01,
+  mapping = aes(x = t, y = T)
+) + geom_line() + labs(x = "elapsed time (s)", y = "Temperature (°C)", title = "Oil Bath Stability", subtitle = "Fluke 7060 set to 25°C, measured by Fluke 1594A w/ 5699 SPRT")
+```
+
+![](ir_analysis_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
