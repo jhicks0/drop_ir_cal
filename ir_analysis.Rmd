@@ -60,8 +60,9 @@ ggplot(
 ```
 ```{r}
 ggplot(
-  data = DCI_01,
-  mapping = aes(x = t, y = To - T)
-)
+  data = ST_DCI_01,
+  mapping = aes(x = t, y = T)
+) + geom_line() + labs(x = "elapsed time (s)", y = "Temperature (°C)", title = "Oil Bath Stability", subtitle = "Fluke 7060 set to 25°C, measured by Fluke 1594A w/ 5699 SPRT")
 ```
+
 
