@@ -53,11 +53,11 @@ Once the bath temperature and SPRT have stabilized, data can be collected.
 
 All data collected should be based on the lab PC time. The superthermometer has an internal clock that is off slightly.
 
-Capture data for \~1 minute. Then, raise the temperature of the IR sensor body by 5°C (Ta). Then allow To to return to the initial reading it had. Next, open the relay valve to blow air past the lens. (spaced approximately 5 seconds apart). After this, capture data for another \~30 seconds, before shutting down.
+Capture data for \~1 minute. Then, raise the temperature of the IR sensor body by \~4°C (Ta). Then allow To to return to the initial reading it had. Next, open the relay valve to blow air (low-pressure) past the lens. After this, capture data for another \~30 seconds, before shutting down.
 
 ### Data
 
-IR data is saved to IR_PN_SN_YYYYMMDDTHHMM at 1Hz. Thermistor data is saved to TH_PN_SN_YYYYMMDDTHHMM at 1 sample/2 to 3 seconds. Thermistor data is recorded in raw A to D counts and is subsequently converted to Kelvin and then to Celsius. The thermistor data either needs to be upsampled or the sample rate increased. SPRT data is saved to ST_PN_SN_YYYYMMDDTHHMM at 1Hz, different than the default of 0.5Hz. This is done from the 1594A by navigating to Main Menu\>Measure Menu\>Timing Settings and selecting the 'Fast' preset. The IR and SPRT data files are the merged based on elapsed time.
+IR data is saved to PN_SN_YYYYMMDD at 1Hz. SPRT data is saved to ST_YYYYMMDD at 1Hz, different than the default of 0.5Hz. This is done from the 1594A by navigating to Main Menu\>Measure Menu\>Timing Settings and selecting the 'Fast' preset. The SPRT collects data for the entire collection period. Then the SPRT data is joined to the IR data files and given the \_j suffix.
 
 ## Data Analysis
 
@@ -65,10 +65,9 @@ IR data is saved to IR_PN_SN_YYYYMMDDTHHMM at 1Hz. Thermistor data is saved to T
 |--------|----------|-------|---------------------------|
 | IR     | Ta       | C     | "ambient" (package temp)  |
 |        | To       | C     | "object" (IR)             |
+|        | To2      | C     | ???                       |
 | ST     | T        | C     | reference                 |
 | TH     | T1       | C     | need to identify position |
 |        | T2       | C     | need to identify position |
 |        | T3       | C     | need to identify position |
 |        | T4       | C     | need to identify position |
-
-Once data is imported and tidied, two types of plots will be made. The first will be plots of single runs with variables Ta, To, and T (and thermistor data if possible). The second will be a series of three plots with the difference of To and T by part number. Need to come up with a function that will look for a statistically significant relationship between Ta and To/T.
