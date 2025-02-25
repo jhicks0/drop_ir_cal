@@ -9,6 +9,7 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(zoo)
+library(hms)
 ```
 
 # MLX90614
@@ -64,5 +65,106 @@ ggplot(
   mapping = aes(x = t, y = T)
 ) + geom_line() + labs(x = "elapsed time (s)", y = "Temperature (°C)", title = "Oil Bath Stability", subtitle = "Fluke 7060 set to 25°C, measured by Fluke 1594A w/ 5699 SPRT")
 ```
+```{r}
+library(dplyr)
 
+st_test <- read.csv("data/stability", skip = 2)
+
+colnames(st_test) <- c("datetime", "T", "V3", "V4", "V5", "V6", "V7", "V8", "V9")  # Rename properly
+
+st_test <- st_test |> 
+  mutate(
+    datetime_parsed = as.POSIXct(datetime, format = "%Y-%m-%d %H:%M:%S"),  # Convert to POSIXct
+    t = as.numeric(difftime(datetime_parsed, min(datetime_parsed), units = "secs"))  # Compute time difference
+  ) |> 
+  select(t, T)  # Keep only necessary columns
+
+head(st_test)  # Check results
+ggplot(data = st_test, mapping = aes(x = t, y = T)) + geom_line() + theme_minimal()
+```
+```{r}
+start <- 3000
+end <- 5500
+subset_data <- st_test |> 
+  filter(t >= start & t <= end)
+plot(subset_data)
+
+```
+```{r}
+bcf_01_20250225 <- read.csv("data/ir_20250225/raw/bcf_01_20250225", skip = 2)
+colnames(bcf_01_20250225) <- c("t", "model", "Ta", "To", "To2", "Tbody", "RAM3", "RAM4", "RAM5")
+bcf_01_20250225 <- bcf_01_20250225 |> 
+  select(t, Ta, To, To2) |> 
+  distinct(t, .keep_all = TRUE) |> 
+  mutate(t = as_hms(t))
+
+bcf_02_20250225 <- read.csv("data/ir_20250225/raw/bcf_02_20250225", skip = 2)
+colnames(bcf_02_20250225) <- c("t", "model", "Ta", "To", "To2", "Tbody", "RAM3", "RAM4", "RAM5")
+bcf_02_20250225 <- bcf_02_20250225 |> 
+  select(t, Ta, To, To2) |> 
+  distinct(t, .keep_all = TRUE) |> 
+  mutate(t = as_hms(t))
+
+
+dch_01_20250225 <- read.csv("data/ir_20250225/raw/dch_01_20250225", skip = 2)
+colnames(dch_01_20250225) <- c("t", "model", "Ta", "To", "To2", "Tbody", "RAM3", "RAM4", "RAM5")
+dch_01_20250225 <- dch_01_20250225 |> 
+  select(t, Ta, To, To2) |> 
+  distinct(t, .keep_all = TRUE) |> 
+  mutate(t = as_hms(t))
+
+dch_02_20250225 <- read.csv("data/ir_20250225/raw/dch_02_20250225", skip = 2)
+colnames(dch_02_20250225) <- c("t", "model", "Ta", "To", "To2", "Tbody", "RAM3", "RAM4", "RAM5")
+dch_02_20250225 <- dch_02_20250225 |> 
+  select(t, Ta, To, To2) |> 
+  distinct(t, .keep_all = TRUE) |> 
+  mutate(t = as_hms(t))
+
+dci_01_20250225 <- read.csv("data/ir_20250225/raw/dci_01_20250225", skip = 2)
+colnames(dci_01_20250225) <- c("t", "model", "Ta", "To", "To2", "Tbody", "RAM3", "RAM4", "RAM5")
+dci_01_20250225 <- dci_01_20250225 |> 
+  select(t, Ta, To, To2) |> 
+  distinct(t, .keep_all = TRUE) |> 
+  mutate(t = as_hms(t))
+
+dci_02_20250225 <- read.csv("data/ir_20250225/raw/dci_02_20250225", skip = 2)
+colnames(dci_02_20250225) <- c("t", "model", "Ta", "To", "To2", "Tbody", "RAM3", "RAM4", "RAM5")
+dci_02_20250225 <- dci_02_20250225 |> 
+  select(t, Ta, To, To2) |> 
+  distinct(t, .keep_all = TRUE) |> 
+  mutate(t = as_hms(t))
+
+st_20250225 <- read.csv("data/ir_20250225/raw/st_20250225")
+colnames(st_20250225) <- c("datetime", "T", "3", "4", "5", "6", "7", "8", "9")
+st_20250225 <- st_20250225 |> 
+   mutate(
+     datetime_parsed = as.POSIXct(datetime, format = "%Y-%m-%d %H:%M:%S"),
+     t = format(datetime_parsed, "%H:%M:%S"),
+    .before = 1
+  ) |> 
+   select(t, T) |> 
+  distinct(t, .keep_all = TRUE) |> 
+  mutate(t = as_hms(t))
+
+```
+
+```{r}
+bcf_01_20250225 <- inner_join(bcf_01_20250225, st_20250225, by = "t")
+write.csv(bcf_01_20250225, file = file.path("data/ir_20250225/joined", "bcf_01_20250225_j"), row.names = FALSE)
+
+bcf_02_20250225 <- inner_join(bcf_02_20250225, st_20250225, by = "t")
+write.csv(bcf_02_20250225, file = file.path("data/ir_20250225/joined", "bcf_02_20250225_j"), row.names = FALSE)
+
+dch_01_20250225 <- inner_join(dch_01_20250225, st_20250225, by = "t")
+write.csv(dch_01_20250225, file = file.path("data/ir_20250225/joined", "dch_01_20250225_j"), row.names = FALSE)
+
+dch_02_20250225 <- inner_join(dch_02_20250225, st_20250225, by = "t")
+write.csv(dch_02_20250225, file = file.path("data/ir_20250225/joined", "dch_02_20250225_j"), row.names = FALSE)
+
+dci_01_20250225 <- inner_join(dci_01_20250225, st_20250225, by = "t")
+write.csv(dci_01_20250225, file = file.path("data/ir_20250225/joined", "dci_01_20250225_j"), row.names = FALSE)
+
+dci_02_20250225 <- inner_join(dci_02_20250225, st_20250225, by = "t")
+write.csv(dci_02_20250225, file = file.path("data/ir_20250225/joined", "dci_02_20250225_j"), row.names = FALSE)
+```
 
