@@ -32,9 +32,11 @@ bcf_01_20250225_jl <- bcf_01_20250225_j |>
   )
 ggplot(bcf_01_20250225_jl, 
        mapping = aes(x = t, y = C, color = var)) +
-       geom_point() +
-       scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
-       scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
+  geom_rect(aes(xmin = 270, xmax = 285, ymin = -Inf, ymax = Inf), 
+            fill = "lightgray") +
+  geom_point() +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 20)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
   labs(
     title = "BCF_01",
     subtitle = "2025-02-25",
@@ -42,8 +44,8 @@ ggplot(bcf_01_20250225_jl,
   #  tag = "",
     x = "Time (s)",
     y = "Temperature (°C)",
-    color = "Variables"
-  )
+    color = "Variables") +
+  annotate("text", x = 277.5, y = 33, label = "air")
   
 ```
 
@@ -62,9 +64,11 @@ bcf_02_20250225_jl <- bcf_02_20250225_j |>
   )
 ggplot(bcf_02_20250225_jl, 
        mapping = aes(x = t, y = C, color = var)) +
-       geom_point() +
-       scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
-       scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
+  geom_rect(aes(xmin = 270, xmax = 285, ymin = -Inf, ymax = Inf), 
+            fill = "lightgray") +
+  geom_point() +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 20)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
   labs(
     title = "BCF_02",
     subtitle = "2025-02-25",
@@ -73,7 +77,8 @@ ggplot(bcf_02_20250225_jl,
     x = "Time (s)",
     y = "Temperature (°C)",
     color = "Variables",
-  )
+  ) +
+  annotate("text", x = 277.5, y = 33, label = "air")
   
 ```
 ```{r, echo=FALSE}
@@ -90,9 +95,11 @@ dch_01_20250225_jl <- dch_01_20250225_j |>
   )
 ggplot(dch_01_20250225_jl, 
        mapping = aes(x = t, y = C, color = var)) +
-       geom_point() +
-       scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
-       scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
+  geom_rect(aes(xmin = 150, xmax = 165, ymin = -Inf, ymax = Inf), 
+            fill = "lightgray") +
+  geom_point() +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 20)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
   labs(
     title = "DCH_01",
     subtitle = "2025-02-25",
@@ -101,7 +108,8 @@ ggplot(dch_01_20250225_jl,
     x = "Time (s)",
     y = "Temperature (°C)",
     color = "Variables",
-   )
+   ) +
+  annotate("text", x = 157.5, y = 33, label = "air")
   
 ```
 ```{r, echo=FALSE}
@@ -118,18 +126,21 @@ dch_02_20250225_jl <- dch_02_20250225_j |>
   )
 ggplot(dch_02_20250225_jl, 
        mapping = aes(x = t, y = C, color = var)) +
-       geom_point() +
-       scale_x_continuous(breaks = scales::pretty_breaks(n = 20)) +
-       scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
+  geom_rect(aes(xmin = 150, xmax = 165, ymin = -Inf, ymax = Inf), 
+            fill = "lightgray") +
+  geom_point() +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 20)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
   labs(
     title = "DCH_02",
     subtitle = "2025-02-25",
-  #  caption = "Data from the 1974 Motor Trend US magazine.",
-  #  tag = "Figure 1",
+  #  caption = "",
+  #  tag = "",
     x = "Time (s)",
     y = "Temperature (°C)",
     color = "Variables",
-    )
+    ) +
+  annotate("text", x = 157.5, y = 36, label = "air")
 ```
 
 ```{r, echo=FALSE}
@@ -146,9 +157,11 @@ dci_01_20250225_jl <- dci_01_20250225_j |>
   )
 ggplot(dci_01_20250225_jl, 
        mapping = aes(x = t, y = C, color = var)) +
-       geom_point() +
-       scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
-       scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
+  geom_rect(aes(xmin = 330, xmax = 345, ymin = -Inf, ymax = Inf), 
+            fill = "lightgray") +     
+  geom_point() +
+    scale_x_continuous(breaks = scales::pretty_breaks(n = 20)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
   labs(
     title = "DCI_01",
     subtitle = "2025-02-25",
@@ -157,7 +170,8 @@ ggplot(dci_01_20250225_jl,
     x = "Time (s)",
     y = "Temperature (°C)",
     color = "Variables",
-  )
+  ) +
+  annotate("text", x = 337.5, y = 31, label = "air")
 ```
 ```{r, echo=FALSE}
 dci_02_20250225_jl <- dci_02_20250225_j |> 
@@ -173,9 +187,11 @@ dci_02_20250225_jl <- dci_02_20250225_j |>
   )
 ggplot(dci_02_20250225_jl, 
        mapping = aes(x = t, y = C, color = var)) +
-       geom_point() +
-       scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
-       scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
+  geom_rect(aes(xmin = 210, xmax = 225, ymin = -Inf, ymax = Inf), 
+            fill = "lightgray") +
+  geom_point() +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 20)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
   labs(
     title = "DCI_02",
     subtitle = "2025-02-25",
@@ -184,5 +200,6 @@ ggplot(dci_02_20250225_jl,
     x = "Time (s)",
     y = "Temperature (°C)",
     color = "Variables",
-  )
+  ) +
+  annotate("text", x = 217.5, y = 33, label = "air")
 ```
