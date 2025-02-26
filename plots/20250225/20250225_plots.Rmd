@@ -1,0 +1,188 @@
+---
+title: "Initial Tests"
+author: "NCAR/EOL Calibration Laboratory"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r, echo=FALSE}
+bcf_01_20250225_j <- read.csv("../../data/ir_20250225/joined/bcf_01_20250225_j")
+bcf_02_20250225_j <- read.csv("../../data/ir_20250225/joined/bcf_02_20250225_j")
+dch_01_20250225_j <- read.csv("../../data/ir_20250225/joined/dch_01_20250225_j")
+dch_02_20250225_j <- read.csv("../../data/ir_20250225/joined/dch_02_20250225_j")
+dci_01_20250225_j <- read.csv("../../data/ir_20250225/joined/dci_01_20250225_j")
+dci_02_20250225_j <- read.csv("../../data/ir_20250225/joined/dci_02_20250225_j")
+```
+
+```{r, echo=FALSE}
+bcf_01_20250225_jl <- bcf_01_20250225_j |> 
+  select(t, Ta, To, T) |> 
+  mutate(
+    t = as.POSIXct(t, format = "%H:%M:%S"),
+    t = as.numeric(difftime(t, min(t), units = "secs"))
+  ) |> 
+  pivot_longer(
+    cols = !c(t),
+    names_to = "var",
+    values_to = "C"
+  )
+ggplot(bcf_01_20250225_jl, 
+       mapping = aes(x = t, y = C, color = var)) +
+       geom_point() +
+       scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+       scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
+  labs(
+    title = "BCF_01",
+    subtitle = "2025-02-25",
+  #  caption = "",
+  #  tag = "",
+    x = "Time (s)",
+    y = "Temperature (°C)",
+    color = "Variables"
+  )
+  
+```
+
+
+```{r, echo=FALSE}
+bcf_02_20250225_jl <- bcf_02_20250225_j |> 
+  select(t, Ta, To, T) |> 
+  mutate(
+    t = as.POSIXct(t, format = "%H:%M:%S"),
+    t = as.numeric(difftime(t, min(t), units = "secs"))
+  ) |> 
+  pivot_longer(
+    cols = !c(t),
+    names_to = "var",
+    values_to = "C"
+  )
+ggplot(bcf_02_20250225_jl, 
+       mapping = aes(x = t, y = C, color = var)) +
+       geom_point() +
+       scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+       scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
+  labs(
+    title = "BCF_02",
+    subtitle = "2025-02-25",
+  #  caption = "",
+  #  tag = "",
+    x = "Time (s)",
+    y = "Temperature (°C)",
+    color = "Variables",
+  )
+  
+```
+```{r, echo=FALSE}
+dch_01_20250225_jl <- dch_01_20250225_j |> 
+  select(t, Ta, To, T) |> 
+  mutate(
+    t = as.POSIXct(t, format = "%H:%M:%S"),
+    t = as.numeric(difftime(t, min(t), units = "secs"))
+  ) |> 
+  pivot_longer(
+    cols = !c(t),
+    names_to = "var",
+    values_to = "C"
+  )
+ggplot(dch_01_20250225_jl, 
+       mapping = aes(x = t, y = C, color = var)) +
+       geom_point() +
+       scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+       scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
+  labs(
+    title = "DCH_01",
+    subtitle = "2025-02-25",
+  #  caption = "",
+  #  tag = "",
+    x = "Time (s)",
+    y = "Temperature (°C)",
+    color = "Variables",
+   )
+  
+```
+```{r, echo=FALSE}
+dch_02_20250225_jl <- dch_02_20250225_j |> 
+  select(t, Ta, To, T) |> 
+  mutate(
+    t = as.POSIXct(t, format = "%H:%M:%S"),
+    t = as.numeric(difftime(t, min(t), units = "secs"))
+  ) |> 
+  pivot_longer(
+    cols = !c(t),
+    names_to = "var",
+    values_to = "C"
+  )
+ggplot(dch_02_20250225_jl, 
+       mapping = aes(x = t, y = C, color = var)) +
+       geom_point() +
+       scale_x_continuous(breaks = scales::pretty_breaks(n = 20)) +
+       scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
+  labs(
+    title = "DCH_02",
+    subtitle = "2025-02-25",
+  #  caption = "Data from the 1974 Motor Trend US magazine.",
+  #  tag = "Figure 1",
+    x = "Time (s)",
+    y = "Temperature (°C)",
+    color = "Variables",
+    )
+```
+
+```{r, echo=FALSE}
+dci_01_20250225_jl <- dci_01_20250225_j |> 
+  select(t, Ta, To, T) |> 
+  mutate(
+    t = as.POSIXct(t, format = "%H:%M:%S"),
+    t = as.numeric(difftime(t, min(t), units = "secs"))
+  ) |> 
+  pivot_longer(
+    cols = !c(t),
+    names_to = "var",
+    values_to = "C"
+  )
+ggplot(dci_01_20250225_jl, 
+       mapping = aes(x = t, y = C, color = var)) +
+       geom_point() +
+       scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+       scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
+  labs(
+    title = "DCI_01",
+    subtitle = "2025-02-25",
+  #  caption = "",
+  #  tag = "",
+    x = "Time (s)",
+    y = "Temperature (°C)",
+    color = "Variables",
+  )
+```
+```{r, echo=FALSE}
+dci_02_20250225_jl <- dci_02_20250225_j |> 
+  select(t, Ta, To, T) |> 
+  mutate(
+    t = as.POSIXct(t, format = "%H:%M:%S"),
+    t = as.numeric(difftime(t, min(t), units = "secs"))
+  ) |> 
+  pivot_longer(
+    cols = !c(t),
+    names_to = "var",
+    values_to = "C"
+  )
+ggplot(dci_02_20250225_jl, 
+       mapping = aes(x = t, y = C, color = var)) +
+       geom_point() +
+       scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+       scale_y_continuous(breaks = scales::pretty_breaks(n = 20))+
+  labs(
+    title = "DCI_02",
+    subtitle = "2025-02-25",
+  #  caption = "",
+  #  tag = "",
+    x = "Time (s)",
+    y = "Temperature (°C)",
+    color = "Variables",
+  )
+```
