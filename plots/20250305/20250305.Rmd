@@ -1,0 +1,260 @@
+---
+title: "20250305"
+author: "NCAR/EOL Calibration Laboratory"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(hms)
+```
+
+# Import ST data
+```{r}
+st_25_20250305 <- read.csv("../../data/20250305/raw/st_25_20250305")
+colnames(st_25_20250305) <- c("time", "T", "3", "4", "5", "6", "7", "8", "9")
+st_25_20250305 <- st_25_20250305 |> 
+   mutate(
+    t = as.POSIXct(time, format = "%H:%M:%S"),
+  #  t = as.numeric(difftime(t, min(t), units = "secs"))
+  ) |> 
+   select(t, T) |> 
+   distinct(t, .keep_all = TRUE) |> 
+   mutate(t = as_hms(t))
+
+st_5_20250306 <- read.csv("../../data/20250306/raw/st_5_20250306")
+colnames(st_5_20250306) <- c("time", "T", "3", "4", "5", "6", "7", "8", "9")
+st_5_20250306 <- st_5_20250306 |> 
+   mutate(
+    t = as.POSIXct(time, format = "%H:%M:%S"),
+  #  t = as.numeric(difftime(t, min(t), units = "secs"))
+  ) |> 
+   select(t, T) |> 
+   distinct(t, .keep_all = TRUE) |> 
+   mutate(t = as_hms(t))
+
+st_40_20250306 <- read.csv("../../data/20250306/raw/st_40_20250306")
+colnames(st_40_20250306) <- c("time", "T", "3", "4", "5", "6", "7", "8", "9")
+st_40_20250306 <- st_40_20250306 |> 
+   mutate(
+    t = as.POSIXct(time, format = "%H:%M:%S"),
+  #  t = as.numeric(difftime(t, min(t), units = "secs"))
+  ) |> 
+   select(t, T) |> 
+   distinct(t, .keep_all = TRUE) |> 
+   mutate(t = as_hms(t))
+```
+
+# Import test
+```{r eval=FALSE, include=FALSE}
+bcf_25_01_20250305 <- read.csv("../../data/20250305/raw/bcf_25_01_20250305.csv", skip = 2)
+colnames(bcf_25_01_20250305) <- c("t", "model", "Ta", "To", "To2", "Tbody", "RAM3", "RAM4", "RAM5")
+bcf_25_01_20250305 <- bcf_25_01_20250305 |> 
+  select(t, Ta, To, To2) |> 
+  distinct(t, .keep_all = TRUE) |> 
+  mutate(t = as_hms(t))
+
+bcf_25_01_20250305 <- inner_join(bcf_25_01_20250305, st_25_20250305, by = "t")
+write.csv(bcf_25_01_20250305, file = file.path("../../data/20250305/joined", "bcf_25_01_20250305_j"), row.names = FALSE)
+
+```
+
+# Import 25C run
+```{r}
+# Define directories
+input_dir <- "../../data/20250305/raw"
+output_dir <- "../../data/20250305/joined"
+
+# Ensure output directory exists
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+
+# List all relevant CSV files (bcf_*, dci_*, dch_*)
+files <- list.files(input_dir, pattern = "^(bcf|dci|dch)_.*\\.csv$", full.names = TRUE)
+
+# Debug: Print files found
+if (length(files) == 0) {
+  stop("No matching files found in the directory: ", input_dir)
+}
+
+print(files)  # Print found files
+
+# Function to process each file
+process_file <- function(file_path) {
+  file_name <- basename(file_path)
+  message("Processing: ", file_name)
+  
+  df <- read.csv(file_path, skip = 2)
+
+  expected_cols <- c("t", "model", "Ta", "To", "To2", "Tbody", "RAM3", "RAM4", "RAM5")
+  if (ncol(df) != length(expected_cols)) {
+    warning("Skipping file due to unexpected column count: ", file_name)
+    return(NULL)
+  }
+  
+  colnames(df) <- expected_cols
+
+  df <- df |> 
+    select(t, Ta, To, To2) |> 
+    distinct(t, .keep_all = TRUE) |> 
+    mutate(t = as_hms(t))
+  
+  df <- inner_join(df, st_25_20250305, by = "t")
+  
+  output_file <- file.path(output_dir, paste0(sub("\\.csv$", "", file_name), "_j.csv"))
+  write.csv(df, file = output_file, row.names = FALSE)
+  
+  message("Saved: ", output_file)
+  return(output_file)
+}
+
+output_files <- lapply(files, process_file)
+output_files <- output_files[!sapply(output_files, is.null)]  # Remove NULLs
+
+print(output_files)
+```
+
+
+# Import 5C run
+```{r}
+# Define directories
+input_dir_1 <- "../../data/20250306/raw"
+output_dir_1 <- "../../data/20250306/joined"
+
+# Ensure output directory exists
+if (!dir.exists(output_dir_1)) {
+  dir.create(output_dir_1, recursive = TRUE)
+}
+
+# List all relevant CSV files (bcf_*, dci_*, dch_*)
+files <- list.files(input_dir_1, pattern = "^[a-zA-Z]{3}_5.*\\.csv$", full.names = TRUE)
+
+# Debug: Print files found
+if (length(files) == 0) {
+  stop("No matching files found in the directory: ", input_dir_1)
+}
+
+print(files)  # Print found files
+
+# Function to process each file
+process_file <- function(file_path) {
+  file_name <- basename(file_path)
+  message("Processing: ", file_name)
+  
+  df <- read.csv(file_path, skip = 2)
+
+  expected_cols <- c("t", "model", "Ta", "To", "To2", "Tbody", "RAM3", "RAM4", "RAM5")
+  if (ncol(df) != length(expected_cols)) {
+    warning("Skipping file due to unexpected column count: ", file_name)
+    return(NULL)
+  }
+  
+  colnames(df) <- expected_cols
+
+  df <- df |> 
+    select(t, Ta, To, To2) |> 
+    distinct(t, .keep_all = TRUE) |> 
+    mutate(t = as_hms(t))
+  
+  df <- inner_join(df, st_5_20250306, by = "t")
+  
+  output_file <- file.path(output_dir_1, paste0(sub("\\.csv$", "", file_name), "_j.csv"))
+  write.csv(df, file = output_file, row.names = FALSE)
+  
+  message("Saved: ", output_file)
+  return(output_file)
+}
+
+output_files <- lapply(files, process_file)
+output_files <- output_files[!sapply(output_files, is.null)]  # Remove NULLs
+
+print(output_files)
+```
+
+
+# Import 40C run
+```{r}
+# Define directories
+input_dir_1 <- "../../data/20250306/raw"
+output_dir_1 <- "../../data/20250306/joined"
+
+# Ensure output directory exists
+if (!dir.exists(output_dir_1)) {
+  dir.create(output_dir_1, recursive = TRUE)
+}
+
+# List all relevant CSV files (bcf_*, dci_*, dch_*)
+files <- list.files(input_dir_1, pattern = "^[a-zA-Z]{3}_40.*\\.csv$", full.names = TRUE)
+
+# Debug: Print files found
+if (length(files) == 0) {
+  stop("No matching files found in the directory: ", input_dir_1)
+}
+
+print(files)  # Print found files
+
+# Function to process each file
+process_file <- function(file_path) {
+  file_name <- basename(file_path)
+  message("Processing: ", file_name)
+  
+  df <- read.csv(file_path, skip = 2)
+
+  expected_cols <- c("t", "model", "Ta", "To", "To2", "Tbody", "RAM3", "RAM4", "RAM5")
+  if (ncol(df) != length(expected_cols)) {
+    warning("Skipping file due to unexpected column count: ", file_name)
+    return(NULL)
+  }
+  
+  colnames(df) <- expected_cols
+
+  df <- df |> 
+    select(t, Ta, To, To2) |> 
+    distinct(t, .keep_all = TRUE) |> 
+    mutate(t = as_hms(t))
+  
+  df <- inner_join(df, st_40_20250306, by = "t")
+  
+  output_file <- file.path(output_dir_1, paste0(sub("\\.csv$", "", file_name), "_j.csv"))
+  write.csv(df, file = output_file, row.names = FALSE)
+  
+  message("Saved: ", output_file)
+  return(output_file)
+}
+
+output_files <- lapply(files, process_file)
+output_files <- output_files[!sapply(output_files, is.null)]  # Remove NULLs
+
+print(output_files)
+```
+
+```{r}
+# Define directory containing processed files
+dir_25 <- "../../data/20250305/joined"
+
+# List all processed files (_j.csv)
+files_25 <- list.files(dir_25, pattern = "_j\\.csv$", full.names = TRUE)
+
+# Read and combine all processed CSV files
+combined_data <- lapply(files, read.csv) %>% bind_rows()
+
+# Convert 't' column to hms format
+combined_data$t <- as_hms(combined_data$t)
+
+# Reshape data for plotting (long format)
+long_25 <- combined_data %>%
+  select(t, Ta, To, T) %>%
+  pivot_longer(cols = c(Ta, To, T), names_to = "type", values_to = "C")
+
+# Plot using ggplot
+ggplot(long_25, aes(x = t, y = C, color = type)) +
+  geom_line(size = 1) +
+  labs(title = "Temperature Over Time",
+       x = "Time (t)",
+       y = "Temperature",
+       color = "Temperature Type") +
+  theme_minimal()
+```
+
