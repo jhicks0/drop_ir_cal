@@ -100,7 +100,15 @@ process_file <- function(file_path) {
     select(t, Ta, To, To2) |> 
     distinct(t, .keep_all = TRUE) |> 
     mutate(t = as_hms(t))
-  
+
+    df <- df |> 
+    mutate(
+    type = str_extract(file_name, "^[a-z]+"),      # Extract "bch", "dci", or "dhc"
+    k = str_extract(file_name, "(?<=_)\\d+(?=_)"), # Extract "5", "25", or "40"
+    id = str_extract(file_name, "(?<=25_)\\d{2}"), # Extract id#
+  ) |> 
+      select(t, type, k, id, Ta, To, To2)
+    
   df <- inner_join(df, st_25_20250305, by = "t")
   
   output_file <- file.path(output_dir, paste0(sub("\\.csv$", "", file_name), "_j.csv"))
@@ -112,8 +120,6 @@ process_file <- function(file_path) {
 
 output_files <- lapply(files, process_file)
 output_files <- output_files[!sapply(output_files, is.null)]  # Remove NULLs
-
-print(output_files)
 ```
 
 
@@ -158,6 +164,14 @@ process_file <- function(file_path) {
     distinct(t, .keep_all = TRUE) |> 
     mutate(t = as_hms(t))
   
+    df <- df |> 
+    mutate(
+    type = str_extract(file_name, "^[a-z]+"),      # Extract "bch", "dci", or "dhc"
+    k = str_extract(file_name, "(?<=_)\\d+(?=_)"), # Extract "5", "25", or "40"
+    id = str_extract(file_name, "(?<=5_)\\d{2}"), # Extract id#
+  ) |> 
+      select(t, type, k, id, Ta, To, To2)
+  
   df <- inner_join(df, st_5_20250306, by = "t")
   
   output_file <- file.path(output_dir_1, paste0(sub("\\.csv$", "", file_name), "_j.csv"))
@@ -169,8 +183,6 @@ process_file <- function(file_path) {
 
 output_files <- lapply(files, process_file)
 output_files <- output_files[!sapply(output_files, is.null)]  # Remove NULLs
-
-print(output_files)
 ```
 
 
@@ -215,6 +227,14 @@ process_file <- function(file_path) {
     distinct(t, .keep_all = TRUE) |> 
     mutate(t = as_hms(t))
   
+  df <- df |> 
+    mutate(
+    type = str_extract(file_name, "^[a-z]+"),      # Extract "bch", "dci", or "dhc"
+    k = str_extract(file_name, "(?<=_)\\d+(?=_)"), # Extract "5", "25", or "40"
+    id = str_extract(file_name, "(?<=40_)\\d{2}"), # Extract id#
+  ) |> 
+      select(t, type, k, id, Ta, To, To2)
+  
   df <- inner_join(df, st_40_20250306, by = "t")
   
   output_file <- file.path(output_dir_1, paste0(sub("\\.csv$", "", file_name), "_j.csv"))
@@ -238,23 +258,12 @@ dir_25 <- "../../data/20250305/joined"
 files_25 <- list.files(dir_25, pattern = "_j\\.csv$", full.names = TRUE)
 
 # Read and combine all processed CSV files
-combined_data <- lapply(files, read.csv) %>% bind_rows()
-
-# Convert 't' column to hms format
-combined_data$t <- as_hms(combined_data$t)
+combined_data <- lapply(files_25, read.csv) |>  bind_rows()
 
 # Reshape data for plotting (long format)
-long_25 <- combined_data %>%
-  select(t, Ta, To, T) %>%
-  pivot_longer(cols = c(Ta, To, T), names_to = "type", values_to = "C")
-
-# Plot using ggplot
-ggplot(long_25, aes(x = t, y = C, color = type)) +
-  geom_line(size = 1) +
-  labs(title = "Temperature Over Time",
-       x = "Time (t)",
-       y = "Temperature",
-       color = "Temperature Type") +
-  theme_minimal()
+long_25 <- combined_data |> 
+  select(t, type, id, Ta, To, To2, T) |>
+  pivot_longer(tail(names(combined_data), 4), names_to = "Tvar", values_to = "C") |> 
+  select(time = t, type, id, Tvar, C)
 ```
 
