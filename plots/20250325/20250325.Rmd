@@ -1,0 +1,120 @@
+---
+title: "20250325"
+output: html_document
+---
+
+---
+title: "20250305"
+author: "NCAR/EOL Calibration Laboratory"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(hms)
+```
+
+# Import ST data
+```{r}
+st_20250325 <- read.csv("../../data/20250325/raw/st_20250325")
+colnames(st_20250325) <- c("time", "T", "3", "4", "5", "6", "7", "8", "9")
+st_20250325 <- st_20250325 |> 
+   mutate(
+    t = as.POSIXct(time, format = "%H:%M:%S"),
+  #  t = as.numeric(difftime(t, min(t), units = "secs"))
+  ) |> 
+   select(t, T) |> 
+   distinct(t, .keep_all = TRUE) |> 
+   mutate(t = as_hms(t))
+```
+
+# Import 25C run
+```{r}
+# Define directories
+input_dir <- "../../data/20250325/raw"
+output_dir <- "../../data/20250325/joined"
+
+# Ensure output directory exists
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+
+# List all relevant CSV files (bcf_*, dci_*, dch_*)
+files <- list.files(input_dir, pattern = "^(bcf|dci|dch)_.*\\.csv$", full.names = TRUE)
+
+# Debug: Print files found
+if (length(files) == 0) {
+  stop("No matching files found in the directory: ", input_dir)
+}
+
+print(files)  # Print found files
+
+# Function to process each file
+process_file <- function(file_path) {
+  file_name <- basename(file_path)
+  message("Processing: ", file_name)
+  
+  df <- read.csv(file_path, skip = 2)
+
+  expected_cols <- c("t", "model", "Ta", "To", "To2", "Tbody", "RAM3", "RAM4", "RAM5")
+  if (ncol(df) != length(expected_cols)) {
+    warning("Skipping file due to unexpected column count: ", file_name)
+    return(NULL)
+  }
+  
+  colnames(df) <- expected_cols
+
+  df <- df |> 
+    select(t, Ta, To, To2) |> 
+    distinct(t, .keep_all = TRUE) |> 
+    mutate(t = as_hms(t))
+
+    df <- df |> 
+    mutate(
+    type = str_extract(file_name, "^[a-z]+"),      # Extract "bch", "dci", or "dhc"
+    id = str_extract(file_name, "(?<=_)[0-9]{2}(?=_)"), # Extract id
+  ) |> 
+      select(t, type, id, Ta, To)
+    
+  df <- inner_join(df, st_20250325, by = "t")
+  
+  output_file <- file.path(output_dir, paste0(sub("\\.csv$", "", file_name), "_j.csv"))
+  write.csv(df, file = output_file, row.names = FALSE)
+  
+  message("Saved: ", output_file)
+  return(output_file)
+}
+
+output_files <- lapply(files, process_file)
+output_files <- output_files[!sapply(output_files, is.null)]  # Remove NULLs
+```
+
+
+# Merge into 1 file
+```{r}
+# Define directory containing processed files
+dir <- "../../data/20250325/joined"
+
+# List all processed files (_j.csv)
+files <- list.files(dir, pattern = "_j\\.csv$", full.names = TRUE)
+
+# Read and combine all processed CSV files
+combined_data <- lapply(files, read.csv) |>  bind_rows()
+
+# Convert 't' column to hms format
+combined_data$t <- as_hms(combined_data$t)
+
+avg_data <- combined_data %>%
+  group_by(type, id) %>%
+  summarise(
+    Ta = round(mean(Ta, na.rm = TRUE), 2),
+    To = round(mean(To, na.rm = TRUE), 2),
+    T = round(mean(T, na.rm = TRUE), 4),
+    .groups = "drop"
+  )
+
+# Save averaged data
+write.csv(avg_data, "20250325_avg.csv", row.names = FALSE)
+```
+
